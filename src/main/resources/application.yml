@@ -1,1 +1,36 @@
+spring:
+  application:
+    name: intelligence-sql-backed
+  # ??????
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # ?????
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc.mysql://localhost:3306/sqlB
+    username: root
+    password: 123456
+server:
+  address: 0.0.0.0
+  port: 8102
+  servlet:
+    context-path: /api
+    # session 30 ???
+    session:
+      timeout: "P30D"
+      cookie:
+        same-site: none
+        secure: true  # ????
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # ???????????
+      logic-delete-value: 1 # ?????? ???? 1?
+      logic-not-delete-value: 0 # ?????? ???? 0?
 
