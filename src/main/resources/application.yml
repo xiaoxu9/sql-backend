@@ -1,13 +1,13 @@
 spring:
   application:
     name: intelligence-sql-backed
-  # ??????
+  # 默认开发环境
   profiles:
     active: dev
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  # ?????
+  # 连接数据库
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc.mysql://localhost:3306/sqldb
@@ -18,19 +18,19 @@ server:
   port: 8102
   servlet:
     context-path: /api
-    # session 30 ???
+    # session 30 天
     session:
       timeout: "P30D"
       cookie:
         same-site: none
-        secure: true  # ????
+        secure: true  # 安全模式
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      logic-delete-field: isDelete # ???????????
-      logic-delete-value: 1 # ?????? ???? 1?
-      logic-not-delete-value: 0 # ?????? ???? 0?
+      logic-delete-field: isDelete # 全局设置逻辑删除字段
+      logic-delete-value: 1 # 逻辑删除字段 默认值为 1?
+      logic-not-delete-value: 0 # 逻辑不删除字段 默认值为 0?
 
