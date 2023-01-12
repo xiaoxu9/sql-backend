@@ -7,14 +7,14 @@
     <resultMap id="BaseResultMap" type="cn.xiaoxu.intelligencesql.model.entity.User">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="username" column="userName" jdbcType="VARCHAR"/>
-            <result property="useraccount" column="userAccount" jdbcType="VARCHAR"/>
-            <result property="useravatar" column="userAvatar" jdbcType="VARCHAR"/>
+            <result property="userAccount" column="userAccount" jdbcType="VARCHAR"/>
+            <result property="userAvatar" column="userAvatar" jdbcType="VARCHAR"/>
             <result property="gender" column="gender" jdbcType="TINYINT"/>
-            <result property="userrole" column="userRole" jdbcType="VARCHAR"/>
-            <result property="userpassword" column="userPassword" jdbcType="VARCHAR"/>
-            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
-            <result property="isdelete" column="isDelete" jdbcType="TINYINT"/>
+            <result property="userRole" column="userRole" jdbcType="VARCHAR"/>
+            <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

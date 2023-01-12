@@ -8,13 +8,13 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="type" column="type" jdbcType="INTEGER"/>
-            <result property="reportedid" column="reportedId" jdbcType="BIGINT"/>
-            <result property="reporteduserid" column="reportedUserId" jdbcType="BIGINT"/>
+            <result property="reportedId" column="reportedId" jdbcType="BIGINT"/>
+            <result property="reportedUserId" column="reportedUserId" jdbcType="BIGINT"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
-            <result property="userid" column="userId" jdbcType="BIGINT"/>
-            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
-            <result property="isdelete" column="isDelete" jdbcType="TINYINT"/>
+            <result property="userId" column="userId" jdbcType="BIGINT"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

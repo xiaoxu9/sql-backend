@@ -1,6 +1,6 @@
 spring:
   application:
-    name: intelligence-sql-backed
+    name: intelligence-sql
   # 默认开发环境
   profiles:
     active: dev
@@ -10,7 +10,7 @@ spring:
   # 连接数据库
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc.mysql://localhost:3306/sqldb
+    url: jdbc:mysql://localhost:3306/sqldb
     username: root
     password: 123456
 server:
