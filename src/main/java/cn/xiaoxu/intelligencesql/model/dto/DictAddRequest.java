@@ -21,5 +21,10 @@ public class DictAddRequest implements Serializable {
 	 */
 	private String Content;
 
+	/**
+	 * 审核状态
+	 */
+	private Integer reviewStatus;
+
 	private static final long serialVersionUID = 1L;
 }

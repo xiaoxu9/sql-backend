@@ -1,10 +1,9 @@
 package cn.xiaoxu.intelligencesql.core.builder;
 
-import cn.xiaoxu.intelligencesql.core.model.enums.MockTypeEnum;
-import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
-import cn.xiaoxu.intelligencesql.core.schema.TableSchema.Field;
 import cn.xiaoxu.intelligencesql.core.generator.DataGenerator;
 import cn.xiaoxu.intelligencesql.core.generator.DataGeneratorFactory;
+import cn.xiaoxu.intelligencesql.core.model.enums.MockTypeEnum;
+import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 
 import java.util.*;
@@ -18,14 +17,14 @@ public class DataBuilder {
 
 	public static List<Map<String, Object>> generateData(TableSchema tableSchema, int rowNum) {
 		// rowNum 要生成的数据条数
-		List<Field> fieldList = tableSchema.getFieldList();
+		List<TableSchema.Field> fieldList = tableSchema.getFieldList();
 		// 初始化结果数据
 		List<Map<String, Object>> resultList = new ArrayList<>(rowNum);
 		for (int i = 0; i < rowNum; i++) {
 			resultList.add(new HashMap<>());
 		}
 		// 依次生成每一列
-		for (Field field : fieldList) {
+		for (TableSchema.Field field : fieldList) {
 			// 判断参数1 是否为空，不为空，则赋值，为空则赋值参数2，避免了空指针异常
 			// 获取 模拟数据类型枚举
 			MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getMockType()))

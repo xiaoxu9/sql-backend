@@ -2,10 +2,10 @@ package cn.xiaoxu.intelligencesql.core.schema;
 
 import cn.xiaoxu.intelligencesql.common.ErrorCode;
 import cn.xiaoxu.intelligencesql.core.builder.sql.MySQLDialect;
+import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
 import cn.xiaoxu.intelligencesql.core.model.enums.MockTypeEnum;
 import cn.xiaoxu.intelligencesql.exception.BusinessException;
 import cn.xiaoxu.intelligencesql.model.entity.FieldInfo;
-import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
 import cn.xiaoxu.intelligencesql.service.FieldInfoService;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -21,7 +21,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Component;
-import cn.xiaoxu.intelligencesql.core.schema.TableSchema.Field;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -85,17 +84,17 @@ public class TableSchemaBuilder {
 		tableSchema.setTableName("my_table");
 		// 设置表内容
 		tableSchema.setTableComment("自动生成的表");
-		List<Field> fieldList = new ArrayList<>();
+		List<TableSchema.Field> fieldList = new ArrayList<>();
 		// 遍历所有字段，以json格式添加到集合中
 		for (String word : words) {
-			Field field;
+			TableSchema.Field field;
 			// Optional.ofNullable 过滤掉 null 的值，返回不为null的值
 			List<FieldInfo> infoList = Optional.ofNullable(nameFieldInfoMap.get(word))
 					.orElse(fieldNameFieldInfoMap.get(word));
 			// 不为空
 			if (CollectionUtils.isNotEmpty(infoList)){
 				// 转换为json格式
-				field = Gson.fromJson(infoList.get(0).getContent(), Field.class);
+				field = Gson.fromJson(infoList.get(0).getContent(), TableSchema.Field.class);
 			} else {
 				// 未匹配到的使用默认值
 				field = getDefaultField(word);
@@ -141,9 +140,19 @@ public class TableSchemaBuilder {
 			// 设置表注释
 			tableSchema.setTableComment(tableComment);
 			// 用于存储表字段集合
-			List<Field> fieldList = new ArrayList<>();
+			List<TableSchema.Field> fieldList = new ArrayList<>();
 			// 解析列
 			for (SQLTableElement sqlTableElement : sqlCreateTableStatement.getTableElementList()) {
+				// 检查字段的``是否存在，存在则删除
+				SQLColumnDefinition columnDefinition = (SQLColumnDefinition) sqlTableElement;
+				String fieldName = sqlDialect.parseFieldName(columnDefinition.getNameAsString());
+				fieldName = fieldName.replace(" ", "");
+				fieldName = fieldName.replace("`", "");
+				if (!fieldName.equals(sqlDialect.parseFieldName(columnDefinition.getNameAsString()))) {
+					if (fieldName.length() > 2) {
+						columnDefinition.setName(fieldName);
+					}
+				}
 				// 主键约束
 				if (sqlTableElement instanceof SQLPrimaryKey){
 					SQLPrimaryKey sqlPrimaryKey = (SQLPrimaryKey) sqlTableElement;
@@ -156,8 +165,7 @@ public class TableSchemaBuilder {
 					});
 				} else if (sqlTableElement instanceof SQLColumnDefinition) {
 					// 非主键字段 (列)
-					SQLColumnDefinition columnDefinition = (SQLColumnDefinition) sqlTableElement;
-					Field field = new Field();
+					TableSchema.Field field = new TableSchema.Field();
 					// 设置字段名
 					field.setFieldName(sqlDialect.parseFieldName(columnDefinition.getNameAsString()));
 					// 设置字段类型
@@ -217,8 +225,8 @@ public class TableSchemaBuilder {
 			List<Map<Integer, String>> dataList = EasyExcel.read(file.getInputStream()).sheet().headRowNumber(0).doReadSync();
 			// 第一行表头
 			Map<Integer, String> map = dataList.get(0);
-			List<Field> fieldList = map.values().stream().map(name -> {
-				Field field = new Field();
+			List<TableSchema.Field> fieldList = map.values().stream().map(name -> {
+				TableSchema.Field field = new TableSchema.Field();
 				field.setFieldName(name);
 				field.setComment(name);
 				field.setFieldType(FieldTypeEnum.TEXT.getValue());
@@ -316,8 +324,8 @@ public class TableSchemaBuilder {
 	 * @param word
 	 * @return
 	 */
-	private static Field getDefaultField(String word) {
-		final Field field = new Field();
+	private static TableSchema.Field getDefaultField(String word) {
+		final TableSchema.Field field = new TableSchema.Field();
 		field.setFieldName(word);
 		field.setFieldType("text");
 		field.setDefaultValue("");

@@ -17,12 +17,12 @@ public class DataGeneratorFactory {
 	 * 模拟类型 => 生成器映射
 	 */
 	private static final Map<MockTypeEnum, DataGenerator> mockTypeDataGeneratorMap = new HashMap<MockTypeEnum, DataGenerator>() {{
-		put(MockTypeEnum.NONE, new DefaultDataGenerator());
-		put(MockTypeEnum.FIXED, new FixedDataGenerator());
-		put(MockTypeEnum.RANDOM, new RandomDataGenerator());
-		put(MockTypeEnum.RULE, new RuleDataGenerator());
-		put(MockTypeEnum.DICT, new DictDataGenerator());
-		put(MockTypeEnum.INCREASE, new IncreaseDataGenerator());
+		put(MockTypeEnum.NONE, new DefaultDataGenerator());  // 默认生成器
+		put(MockTypeEnum.FIXED, new FixedDataGenerator());  // 固定生成器
+		put(MockTypeEnum.RANDOM, new RandomDataGenerator());  // 随机生成器
+		put(MockTypeEnum.RULE, new RuleDataGenerator());  // 规则生成器
+		put(MockTypeEnum.DICT, new DictDataGenerator());  // 词库生成器
+		put(MockTypeEnum.INCREASE, new IncreaseDataGenerator()); // 递增生成器
 	}};
 
 	/**

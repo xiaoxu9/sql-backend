@@ -1,21 +1,29 @@
 spring:
   application:
-    name: intelligence-sql
+    name: sql-backend
   # 默认开发环境
   profiles:
     active: dev
+    # 在SpringBoot2.6之后，Spring MVC 处理程序映射匹配请求路径的默认策略已从 AntPathMatcher 更改为PathPatternParser。
+    # 如果需要切换为AntPathMatcher，官方给出的方法是配置spring.mvc.pathmatch.matching-strategy=ant_path_matcher
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  # redis 配置
+  redis:
+    port: 6379
+    host: localhost
+    database: 0
   # 连接数据库
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sqldb
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sqldb?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false
     username: root
     password: 123456
+
 server:
   address: 0.0.0.0
-  port: 8102
+  port: 8080                 #https端口
   servlet:
     context-path: /api
     # session 30 天
@@ -23,7 +31,7 @@ server:
       timeout: "P30D"
       cookie:
         same-site: none
-        secure: true  # 安全模式
+        secure: true  # 安全模式  https时设置为true
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false

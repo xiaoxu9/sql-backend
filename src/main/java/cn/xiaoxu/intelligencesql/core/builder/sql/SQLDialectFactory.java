@@ -33,13 +33,13 @@ public class SQLDialectFactory {
 		if (null == dialect) {
 			synchronized (className.intern()) {
 				dialect = DIALECT_POOL.computeIfAbsent(className,
-						key -> {
-							try {
-								return (SQLDialect) Class.forName(className).newInstance();
-							} catch (Exception e) {
-								throw new BusinessException(ErrorCode.SYSTEM_ERROR);
-							}
-						});
+					key -> {
+						try {
+							return (SQLDialect) Class.forName(className).newInstance();
+						} catch (Exception e) {
+							throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+						}
+					});
 			}
 		}
 		return dialect;

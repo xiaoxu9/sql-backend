@@ -1,14 +1,13 @@
 package cn.xiaoxu.intelligencesql.core.builder;
 
 import cn.xiaoxu.intelligencesql.common.ErrorCode;
+import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
+import cn.xiaoxu.intelligencesql.core.model.enums.MockTypeEnum;
+import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
 import cn.xiaoxu.intelligencesql.core.builder.sql.MySQLDialect;
 import cn.xiaoxu.intelligencesql.core.builder.sql.SQLDialect;
 import cn.xiaoxu.intelligencesql.core.builder.sql.SQLDialectFactory;
-import cn.xiaoxu.intelligencesql.core.model.enums.MockTypeEnum;
-import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
-import cn.xiaoxu.intelligencesql.core.schema.TableSchema.Field;
 import cn.xiaoxu.intelligencesql.exception.BusinessException;
-import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +31,7 @@ public class SqlBuilder {
 	private SQLDialect sqlDialect;
 
 	public SqlBuilder() {
-		this.sqlDialect = SQLDialectFactory.getDialect(MySQLDialect.class.getName());
+		this.sqlDialect = SQLDialectFactory.getDialect(MySQLDialect.class.getName()); // 默认为MySQL方言
 	}
 
 	public SqlBuilder(SQLDialect sqlDialect) {
@@ -72,15 +71,15 @@ public class SqlBuilder {
 		if (StringUtils.isBlank(tableComment)) {
 			tableComment = tableName;
 		}
-		String tablePrefixComment = String.format("--%s", tableComment);
+		String tablePrefixComment = String.format("-- %s", tableComment);
 		// 构造表后缀注释
 		String tableSuffixComment = String.format("comment '%s'", tableComment);
 		// 构造表字段
-		List<Field> fieldList = tableSchema.getFieldList();
+		List<TableSchema.Field> fieldList = tableSchema.getFieldList();
 		StringBuilder fieldStrBuilder = new StringBuilder();
 		int fieldSize = fieldList.size();
 		for (int i = 0; i < fieldSize; i++) {
-			Field field = fieldList.get(i);
+			TableSchema.Field field = fieldList.get(i);
 			fieldStrBuilder.append(buildCreateFieldSql(field));
 			// 最后一个字段后没有逗号和换行
 			if (i != fieldSize - 1) {
@@ -89,6 +88,7 @@ public class SqlBuilder {
 			}
 		}
 		String fieldStr = fieldStrBuilder.toString();
+		fieldStr = fieldStr.replace("'CURRENT_TIMESTAMP'", "CURRENT_TIMESTAMP");
 		// 填充模板
 		String result = String.format(template, tablePrefixComment, tableName, fieldStr, tableSuffixComment);
 		log.info("sql result = ", result);
@@ -101,7 +101,7 @@ public class SqlBuilder {
 	 * @param field
 	 * @return
 	 */
-	public String buildCreateFieldSql(Field field) {
+	public String buildCreateFieldSql(TableSchema.Field field) {
 		if (field == null) {
 			throw new BusinessException(ErrorCode.PARAMS_ERROR);
 		}
@@ -164,7 +164,7 @@ public class SqlBuilder {
 			tableName = String.format("%s.%s", dbName, tableName);
 		}
 		// 构造表字段
-		List<Field> fieldList = tableSchema.getFieldList();
+		List<TableSchema.Field> fieldList = tableSchema.getFieldList();
 		// 过滤掉不模拟的字段
 		fieldList.stream().filter(field -> {
 			MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getFieldType())).orElse(MockTypeEnum.NONE);
@@ -201,7 +201,7 @@ public class SqlBuilder {
 	 * @param value
 	 * @return
 	 */
-	public static String getValueStr(Field field, Object value) {
+	public static String getValueStr(TableSchema.Field field, Object value) {
 		if (field == null || value == null) {
 			return "''";
 		}

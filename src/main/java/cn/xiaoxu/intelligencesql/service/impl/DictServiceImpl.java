@@ -50,7 +50,12 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
 				String[] words = content.split("[,，]");
 				// 移除开头结尾空格
 				for (int i = 0; i < words.length; i++) {
-					words[i] = words[i].trim();
+					// 去除多余的"\[]
+					words[i] = words[i].replace("[", "");
+					words[i] = words[i].replace("]", "");
+					words[i] = words[i].replace("\"", "");
+					words[i] = words[i].replace("\\", "");
+					words[i] = words[i] = words[i].trim();
 				}
 				// 过滤空单词
 				List<String> wordList = Arrays.stream(words).filter(StringUtils::isNotBlank).collect(Collectors.toList());

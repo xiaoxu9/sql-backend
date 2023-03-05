@@ -13,7 +13,8 @@ public enum ReviewStatusEnum {
 
     REVIEWING("待审核", 0),
     PASS("通过", 1),
-    REJECT("拒绝", 2);
+    REJECT("拒绝", 2),
+    UNCOMMIT("未提交", 3);
 
     private final String text;
 

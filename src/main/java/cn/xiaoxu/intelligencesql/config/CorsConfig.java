@@ -11,7 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
-
+    /**
+     * 开启跨域
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // 覆盖所有请求

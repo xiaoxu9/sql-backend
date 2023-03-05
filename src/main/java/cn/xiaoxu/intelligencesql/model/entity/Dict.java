@@ -33,7 +33,7 @@ public class Dict implements Serializable {
     private String content;
 
     /**
-     * 状态（0-待审核, 1-通过, 2-拒绝）
+     * 状态（0-待审核, 1-通过, 2-拒绝, 3-未提交）
      */
     private Integer reviewStatus;
 

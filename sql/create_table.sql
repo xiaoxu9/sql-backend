@@ -10,10 +10,10 @@ create table if not exists user
     id           bigint auto_increment comment 'id' primary key,
     userName     varchar(256)                           null comment '用户昵称',
     userAccount  varchar(256)                           not null comment '账号',
-    userAvatar   varchar(1024)                          null comment '用户头像',
+    userAvatar   varchar(256)                           null comment '用户头像',
     gender       tinyint                                null comment '性别',
-    userRole     varchar(256) default 'user'            not null comment '用户角色：user/ admin',
-    userPassword varchar(512)                           not null comment '密码',
+    userRole     varchar(32) default 'user'             not null comment '用户角色：user/ admin',
+    userPassword varchar(256)                           not null comment '密码',
     createTime   datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime   datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete     tinyint      default 0                 not null comment '是否删除',
@@ -26,8 +26,8 @@ create table if not exists user
 create table if not exists dict
 (
     id            bigint auto_increment comment 'id' primary key,
-    name          varchar(512)                       null comment '词库名称',
-    content       text                               null comment '词库内容（json 数组）',
+    name          varchar(512)                       not null comment '词库名称',
+    content       text                               not null comment '词库内容（json 数组）',
     reviewStatus  int      default 0                 not null comment '状态（0-待审核, 1-通过, 2-拒绝）',
     reviewMessage varchar(512)                       null comment '审核信息',
     userId        bigint                             not null comment '创建用户 id',
@@ -60,8 +60,8 @@ create index idx_name
 create table if not exists field_info
 (
     id            bigint auto_increment comment 'id' primary key,
-    name          varchar(512)                       null comment '名称',
-    fieldName     varchar(512)                       null comment '字段名称',
+    name          varchar(128)                       null comment '名称',
+    fieldName     varchar(128)                       not null comment '字段名称',
     content       text                               null comment '字段信息（json）',
     reviewStatus  int      default 0                 not null comment '状态（0-待审核, 1-通过, 2-拒绝）',
     reviewMessage varchar(512)                       null comment '审核信息',

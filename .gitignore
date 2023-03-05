@@ -19,6 +19,9 @@ target/
 *.iml
 *.ipr
 
+### 开发环境 ###
+/resources/application-prod.yml
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

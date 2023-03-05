@@ -60,6 +60,12 @@ public class TableInfoController {
 		BeanUtils.copyProperties(tableInfoAddRequest, tableInfo);
 		// 校验
 		tableInfoService.validAndHandleTableInfo(tableInfo, true);
+		// 默认审核状态为未提交(3-未提交)
+		System.out.println(tableInfoAddRequest);
+		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"+tableInfo);
+		if (tableInfo.getReviewStatus() != 3) {
+			tableInfo.setReviewStatus(3);
+		}
 		User loginUser = userService.getLoginUser(request);
 		// 表信息和当前用户关联
 		tableInfo.setUserId(loginUser.getId());
@@ -274,7 +280,6 @@ public class TableInfoController {
 	/**
 	 * 生成创建表的 SQL
 	 *
-	 * @param id
 	 * @return
 	 */
 	@PostMapping("/generate/sql")
@@ -283,7 +288,9 @@ public class TableInfoController {
 			throw new BusinessException(ErrorCode.PARAMS_ERROR);
 		}
 		// 根据id获取tableInfo
+		System.out.println("################" + id);
 		TableInfo tableInfo = tableInfoService.getById(id);
+		System.out.println("$$$$$$$$$$$$" + tableInfo);
 		// 判断是否存在
 		if (tableInfo == null) {
 			throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);

@@ -1,7 +1,7 @@
 package cn.xiaoxu.intelligencesql.core;
 
-import cn.xiaoxu.intelligencesql.core.builder.*;
 import cn.xiaoxu.intelligencesql.core.model.vo.GenerateVO;
+import cn.xiaoxu.intelligencesql.core.builder.*;
 import cn.xiaoxu.intelligencesql.core.schema.SchemaException;
 import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
 import lombok.extern.slf4j.Slf4j;

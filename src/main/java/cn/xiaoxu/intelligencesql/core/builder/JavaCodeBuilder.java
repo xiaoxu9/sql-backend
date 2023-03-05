@@ -3,13 +3,11 @@ package cn.xiaoxu.intelligencesql.core.builder;
 import cn.hutool.core.util.StrUtil;
 import cn.xiaoxu.intelligencesql.common.ErrorCode;
 import cn.xiaoxu.intelligencesql.core.model.dto.JavaEntityGenerateDTO;
-import cn.xiaoxu.intelligencesql.core.model.dto.JavaEntityGenerateDTO.FieldDTO;
 import cn.xiaoxu.intelligencesql.core.model.dto.JavaObjectGenerateDTO;
+import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
 import cn.xiaoxu.intelligencesql.core.model.enums.MockTypeEnum;
 import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
-import cn.xiaoxu.intelligencesql.core.schema.TableSchema.Field;
 import cn.xiaoxu.intelligencesql.exception.BusinessException;
-import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -19,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,9 +58,9 @@ public class JavaCodeBuilder {
 		// 类注释为表注释 > 为空时则为表名
 		javaEntityGenerateDTO.setClassComment(Optional.ofNullable(tableComment).orElse(upperCamelTableName));
 		// 依次填写每一列
-		List<FieldDTO> fieldDTOList = new ArrayList<>();
-		for (Field field : tableSchema.getFieldList()) {
-			FieldDTO fieldDTO = new FieldDTO();
+		List<JavaEntityGenerateDTO.FieldDTO> fieldDTOList = new ArrayList<>();
+		for (TableSchema.Field field : tableSchema.getFieldList()) {
+			JavaEntityGenerateDTO.FieldDTO fieldDTO = new JavaEntityGenerateDTO.FieldDTO();
 			// 设置Java对象字段名
 			fieldDTO.setFieldName(field.getFieldName());
 			// 统一类型枚举
@@ -105,14 +103,14 @@ public class JavaCodeBuilder {
 		// 依次填写每一列
 		Map<String, Object> fillData = dataList.get(0);
 		List<JavaObjectGenerateDTO.FieldDTO> fieldDTOList = new ArrayList<>();
-		List<Field> fieldList = tableSchema.getFieldList();
+		List<TableSchema.Field> fieldList = tableSchema.getFieldList();
 		// 过滤掉不模拟的字段
 		fieldList = fieldList.stream().filter(field -> {
 			MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getMockType())).orElse(MockTypeEnum.NONE);
 			// 过滤返回不模拟的字段
 			return !MockTypeEnum.NONE.equals(mockTypeEnum);
 		}).collect(Collectors.toList());
-		for (Field field : fieldList) {
+		for (TableSchema.Field field : fieldList) {
 			JavaObjectGenerateDTO.FieldDTO fieldDTO = new JavaObjectGenerateDTO.FieldDTO();
 			// 驼峰字段名
 			String fieldName = field.getFieldName();
@@ -122,8 +120,9 @@ public class JavaCodeBuilder {
 		}
 		javaObjectGenerateDTO.setFieldList(fieldDTOList);
 		StringWriter stringWriter = new StringWriter();
-		Template temp = configuration.getTemplate("java_object.ftl");
-		temp.process(javaObjectGenerateDTO, stringWriter);
+		Template template = configuration.getTemplate("java_object.ftl");
+		// 根据模板来填写数据到stringWriter中
+		template.process(javaObjectGenerateDTO, stringWriter);
 		return stringWriter.toString();
 	}
 
@@ -134,7 +133,7 @@ public class JavaCodeBuilder {
 	 * @param value
 	 * @return
 	 */
-	public static String getValueStr(Field field, Object value) {
+	public static String getValueStr(TableSchema.Field field, Object value) {
 		if (field == null || value == null) {
 			return "''";
 		}

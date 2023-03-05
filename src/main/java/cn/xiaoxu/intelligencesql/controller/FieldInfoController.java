@@ -8,7 +8,7 @@ import cn.xiaoxu.intelligencesql.common.ErrorCode;
 import cn.xiaoxu.intelligencesql.common.ResultUtils;
 import cn.xiaoxu.intelligencesql.constant.CommonConstant;
 import cn.xiaoxu.intelligencesql.core.builder.SqlBuilder;
-import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
+import cn.xiaoxu.intelligencesql.core.schema.TableSchema.Field;
 import cn.xiaoxu.intelligencesql.exception.BusinessException;
 import cn.xiaoxu.intelligencesql.model.dto.FieldInfoAddRequest;
 import cn.xiaoxu.intelligencesql.model.dto.FieldInfoQueryRequest;
@@ -23,7 +23,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.ehcache.shadow.org.terracotta.offheapstore.buffersource.BufferSource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +68,10 @@ public class FieldInfoController {
 		BeanUtils.copyProperties(fieldInfoAddRequest, fieldInfo);
 		// 校验
 		fieldInfoService.validAndHandleFieldInfo(fieldInfo, true);
+		// 默认审核状态为未提交(3-未提交)
+		if (fieldInfo.getReviewStatus() != 3) {
+			fieldInfo.setReviewStatus(3);
+		}
 		User loginUser = userService.getLoginUser(request);
 		fieldInfo.setUserId(loginUser.getId());
 		boolean result = fieldInfoService.save(fieldInfo);
@@ -298,7 +301,7 @@ public class FieldInfoController {
 			throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
 		}
 		// 把json格式转换为自定格式的对象
-		TableSchema.Field field = GSON.fromJson(fieldInfo.getContent(), TableSchema.Field.class);
+		Field field = GSON.fromJson(fieldInfo.getContent(), Field.class);
 		SqlBuilder sqlBuilder = new SqlBuilder();
 		return ResultUtils.success(sqlBuilder.buildCreateFieldSql(field));
 	}

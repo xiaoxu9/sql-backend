@@ -66,8 +66,16 @@ public class DictController {
 		BeanUtils.copyProperties(dictAddRequest, dict);
 		// 校验
 		dictService.validAndHandleDict(dict, true);
+		// 默认审核状态为未提交(3-未提交)
+		if (dict.getReviewStatus() != 3) {
+			dict.setReviewStatus(3);
+		}
 		User loginUser = userService.getLoginUser(request);
 		dict.setUserId(loginUser.getId());
+		// 初始为未提交状态
+		if (!StringUtils.isNotBlank(dict.getReviewMessage()) || dict.getReviewStatus() != 3) {
+			dict.setReviewStatus(3);
+		}
 		boolean result = dictService.save(dict);
 		if (!result) {
 			throw new BusinessException(ErrorCode.OPERATION_ERROR);
@@ -114,6 +122,7 @@ public class DictController {
 		if (dictUpdateRequest == null || dictUpdateRequest.getId() <= 0) {
 			throw new BusinessException(ErrorCode.PARAMS_ERROR);
 		}
+		System.out.println(dictUpdateRequest);
 		Dict dict = new Dict();
 		BeanUtils.copyProperties(dictUpdateRequest, dict);
 		// 参数校验
@@ -121,6 +130,7 @@ public class DictController {
 		// 判断是否存在
 		long id = dictUpdateRequest.getId();
 		Dict oldDict = dictService.getById(id);
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@" + oldDict);
 		if (oldDict == null) {
 			throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
 		}

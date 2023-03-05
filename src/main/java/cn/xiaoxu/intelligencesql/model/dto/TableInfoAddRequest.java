@@ -21,5 +21,10 @@ public class TableInfoAddRequest implements Serializable {
      */
     private String content;
 
+    /**
+     * 审核状态
+     */
+    private Integer reviewStatus;
+
     private static final long serialVersionUID = 1L;
 }

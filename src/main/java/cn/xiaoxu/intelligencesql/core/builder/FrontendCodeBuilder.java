@@ -1,20 +1,21 @@
 package cn.xiaoxu.intelligencesql.core.builder;
 
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.xiaoxu.intelligencesql.core.model.dto.TypescriptTypeGenerateDTO;
-import cn.xiaoxu.intelligencesql.core.model.dto.TypescriptTypeGenerateDTO.FieldDTO;
+import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
 import cn.xiaoxu.intelligencesql.core.schema.TableSchema;
 import cn.xiaoxu.intelligencesql.core.schema.TableSchema.Field;
-import cn.xiaoxu.intelligencesql.core.model.enums.FieldTypeEnum;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,9 +57,9 @@ public class FrontendCodeBuilder {
 		// 类注释为表注释 > 为空时则为表名
 		generateDTO.setClassComment(Optional.ofNullable(tableComment).orElse(upperCamelTableName));
 		// 依次填写每一列
-		List<FieldDTO> fieldDTOList = new ArrayList<>();
+		List<TypescriptTypeGenerateDTO.FieldDTO> fieldDTOList = new ArrayList<>();
 		for (Field field : tableSchema.getFieldList()) {
-			FieldDTO fieldDTO = new FieldDTO();
+			TypescriptTypeGenerateDTO.FieldDTO fieldDTO = new TypescriptTypeGenerateDTO.FieldDTO();
 			// 设置类注释到前端对象中
 			fieldDTO.setComment(field.getComment());
 			// 把java的数据类型转换为通用枚举类型
